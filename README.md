@@ -1,44 +1,17 @@
-# Dropzone Upload
+# Dropzone 文件上传工具
 
 ### 介绍
 
-基于 [Dropzone.js](https://docs.dropzone.dev/) 实现的文件上传。
+基于 [Dropzone.js](https://docs.dropzone.dev/) 实现的上传工具 demo，支持自定义上传地址。
 
-## 快速开始
+## 使用说明
 
-由于使用了 ES 模块 (`import/export`)，需要通过 HTTP 服务器来访问页面，而不能直接双击 index.html 文件。推荐以下方法：
+### 上传地址设置
 
-### 方法 1：使用 Nginx 服务器
+1. 在"上传地址设置"区域输入您的上传服务器地址
+2. 点击"保存"按钮保存配置（支持回车键保存）
+3. 点击"重置"按钮恢复默认地址
 
-1. 安装 Nginx 服务器。
-2. 配置 Nginx 服务器，将项目存放至`nginx 安装目录/html/dropzone-demo`。
-3. 启动 Nginx 服务器。
-4. 在浏览器中访问 http://localhost/dropzone-demo。
+### 默认配置
 
-### 方法 2：Python 内置服务器
-
-```bash
-# 在项目根目录执行
-python -m http.server 8000
-```
-
-然后在浏览器中访问 http://localhost:8000
-
-### 方法 3：VS Code Live Server 扩展
-
-安装 VS Code 的 Live Server 扩展，然后在 index.html 文件上右键选择 "Open with Live Server"
-
-## 自定义配置
-
-默认使用 `https://httpbin.org/post`作为上传路径进行测试。可自定义`config.js` 中的参数，`config.js`默认参数如下：
-
-```js
-const config = {
-  url: "https://httpbin.org/post",
-  dictDefaultMessage:
-    "拖放文件到这里或<span class='click-to-upload'>点击上传</span>",
-  // headers: {
-  //     'Authorization': 'Your Token'
-  // }
-};
-```
+默认使用 `https://httpbin.org/post` 作为测试上传地址。您可以根据需要修改为您的实际服务器地址。

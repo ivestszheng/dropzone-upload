@@ -1,57 +1,503 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dropzone拖放上传示例</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css">
 </head>
 <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        max-width: 800px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    h1 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+
+    .url-config {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .url-config h2 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+    }
+
+    .url-input-group {
+        display: flex;
+        gap: 10px;
+    }
+
+    .url-input {
+        flex-grow: 1;
+        padding: 12px 15px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .url-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .save-btn {
+        padding: 12px 30px;
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+        min-width: 160px;
+    }
+
+    .save-btn:hover {
+        background-color: #2563eb;
+    }
+
+    .reset-btn {
+        padding: 12px 20px;
+        background-color: white;
+        color: #1f2937;
+        border: 1px solid gray;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        min-width: 80px;
+    }
+
+    .reset-btn:hover {
+        background-color: #f0f9ff;
+    }
+
+    .dropzone-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        transition: all 0.3s ease;
+    }
+
     .dropzone {
         overflow: hidden;
-        border: 1px dashed #dcdfe6;
-        color: #606266;
+        border: 2px dashed #d1d5db;
+        color: #6b7280;
         text-align: center;
-        border-radius: 6px;
+        border-radius: 8px;
+        background-color: #f9fafb;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        transition: all 0.3s ease;
     }
 
-    .dropzone.dz-clickable * {
+    .dropzone:hover {
+        border-color: #3b82f6;
+        background-color: #f0f9ff;
+    }
+
+    .dropzone.dz-drag-hover {
+        border-color: #3b82f6;
+        background-color: #dbeafe;
+    }
+
+    .dropzone.dz-started {
+        border-color: #d1d5db;
+    }
+
+    .upload-icon {
+        width: 80px;
+        height: 80px;
+        color: #9ca3af;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .dropzone:hover .upload-icon {
+        color: #3b82f6;
+        transform: scale(1.05);
+    }
+
+    .dz-message {
+        font-size: 1.2rem;
+        margin: 15px 0;
+        color: #4b5563;
+    }
+
+    .click-to-upload {
+        color: #3b82f6;
+        font-weight: 600;
         cursor: pointer;
+        text-decoration: underline;
     }
 
-    .click-to-upload{
-        color: #409eff;
+    .click-to-upload:hover {
+        color: #2563eb;
     }
 
-    .upload-icon{
-        width: 100px;
-        color: #a8abb2;
+    .instructions {
+        margin-top: 25px;
+        padding: 15px;
+        background-color: #eff6ff;
+        border-radius: 8px;
+        border-left: 4px solid #3b82f6;
+    }
+
+    .instructions h3 {
+        color: #1e40af;
+        margin-bottom: 10px;
+    }
+
+    .instructions ul {
+        padding-left: 20px;
+        color: #374151;
+    }
+
+    /* Dialog样式 */
+    dialog {
+        border: none;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        background: white;
+    }
+
+    #messageDialog {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 15px 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 300px;
+        z-index: 1000;
+        display: none;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    #messageDialog.show {
+        display: block;
+    }
+
+    #dialogMessage {
+        font-size: 0.95rem;
+        color: #374151;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .instructions li {
+        margin-bottom: 8px;
+    }
+
+    .file-previews {
+        margin-top: 20px;
+    }
+
+    .dz-preview {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .dz-details {
+        flex-grow: 1;
+    }
+
+    .dz-filename {
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .dz-size {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .dz-success-mark,
+    .dz-error-mark {
+        margin-left: 15px;
+    }
+
+    .dz-progress {
+        background: #e5e7eb;
+        border-radius: 4px;
+        height: 6px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+
+    .dz-progress .dz-upload {
+        background: #3b82f6;
+        height: 100%;
+        transition: width 0.3s ease;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #9ca3af;
+        font-size: 0.9rem;
+    }
+
+    dialog::backdrop {
+        background: transparent;
+        /* 完全透明 */
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+
+        .container {
+            padding: 10px;
+        }
+
+        .dropzone-container {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .dz-message {
+            font-size: 1rem;
+        }
+
+        .upload-icon {
+            width: 60px;
+            height: 60px;
+        }
+
+        .url-input-group {
+            flex-direction: column;
+        }
     }
 </style>
-<body>
-    <form id="myDropzone" class="dropzone">
-        <svg class="upload-icon" fill="currentcolor" t="1754740350687" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1474" width="200" height="200"><path d="M770.354 352.086C721.58 240.25 610.168 162.002 480.364 162.002 305.644 162.002 164 303.642 164 478.364c0 0.954 0.134 1.874 0.142 2.824C74.332 496.22 5.818 574.102 5.818 668.182 5.818 773.016 90.804 858 195.638 858h601.088v-2.186c124.814-15.598 221.458-121.862 221.458-250.906 0-137.998-110.506-249.994-247.83-252.822zM575.272 510.002v221.454H448.726V510.002H353.82L512 351.82l158.182 158.182h-94.91z" p-id="1475"></path></svg>
-    </form>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/dropzone.min.js"></script>
-    <!-- 添加 type="module" 属性以支持 ES 模块 -->
-    <script type="module">
-    import config from './config.js';
-        Dropzone.autoDiscover = false;
-        // 使用配置初始化 Dropzone
-        const myDropzone = new Dropzone("#myDropzone", {
-            ...config,
-            init: function () {
-                // 调用抽取的SVG设置函数
-                setupSvgIcon(this);
 
-                this.on('success', function (file, response) {
-                    console.log('上传成功', response);
-                });
-                this.on('error', function (file, errorMessage) {
-                    console.error('上传失败', errorMessage);
-                });
+<body>
+    <div class="container">
+        <header>
+            <h1>文件上传工具</h1>
+        </header>
+
+        <div class="url-config">
+            <h2>上传地址设置</h2>
+            <div class="url-input-group">
+                <input type="url" id="uploadUrl" class="url-input" placeholder="请输入地址">
+                <button id="resetUrl" class="reset-btn">重置</button>
+                <button id="saveUrl" class="save-btn">保存</button>
+            </div>
+            <!-- 提示信息通知 -->
+            <div id="messageDialog">
+                <p id="dialogMessage"></p>
+            </div>
+        </div>
+
+        <div class="dropzone-container">
+            <form id="myDropzone" class="dropzone">
+                <svg class="upload-icon" fill="currentcolor" t="1754740350687" class="icon" viewBox="0 0 1024 1024"
+                    version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1474">
+                    <path
+                        d="M770.354 352.086C721.58 240.25 610.168 162.002 480.364 162.002 305.644 162.002 164 303.642 164 478.364c0 0.954 0.134 1.874 0.142 2.824C74.332 496.22 5.818 574.102 5.818 668.182 5.818 773.016 90.804 858 195.638 858h601.088v-2.186c124.814-15.598 221.458-121.862 221.458-250.906 0-137.998-110.506-249.994-247.83-252.822zM575.272 510.002v221.454H448.726V510.002H353.82L512 351.82l158.182 158.182h-94.91z"
+                        p-id="1475"></path>
+                </svg>
+                <div class="dz-message">拖放文件到这里或<span class="click-to-upload">点击上传</span></div>
+            </form>
+
+            <div class="instructions">
+                <h3>使用说明</h3>
+                <ul>
+                    <li>将文件拖放到上方区域进行上传</li>
+                    <li>点击上传区域或SVG图标选择文件</li>
+                    <li>支持多文件同时上传</li>
+                    <li>文件大小限制：无特殊限制</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>MIT Licensed | Copyright © 2021-present ivestszheng(无声2017)</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/dropzone.min.js"></script>
+    <script>
+        Dropzone.autoDiscover = false;
+        // 默认配置
+        const defaultConfig = {
+            url: "https://httpbin.org/post",
+        };
+
+        // 获取DOM元素
+        const uploadUrlInput = document.getElementById('uploadUrl');
+        const saveUrlButton = document.getElementById('saveUrl');
+        const resetUrlButton = document.getElementById('resetUrl');
+
+        // 从localStorage加载保存的URL
+        function loadSavedUrl() {
+            // 设置placeholder为默认URL
+            uploadUrlInput.placeholder = "请输入上传地址，例如：" + defaultConfig.url;
+
+            const savedUrl = localStorage.getItem('dropzoneUploadUrl');
+            if (savedUrl) {
+                uploadUrlInput.value = savedUrl;
+            } else {
+                // 如果没有保存的URL，则使用默认URL
+                uploadUrlInput.value = defaultConfig.url;
             }
-        });
+        }
+
+        // 保存URL到localStorage
+        function saveUrl() {
+            const url = uploadUrlInput.value.trim();
+            if (url) {
+                localStorage.setItem('dropzoneUploadUrl', url);
+                // 重新初始化Dropzone以使用新的URL
+                initDropzone();
+
+                // 显示成功消息
+                showMessage('URL保存成功！');
+            } else {
+                showMessage('请输入有效的URL');
+            }
+        }
+
+        // 重置URL到默认值
+        function resetUrl() {
+            uploadUrlInput.value = defaultConfig.url;
+            localStorage.removeItem('dropzoneUploadUrl');
+            // 重新初始化Dropzone以使用默认URL
+            initDropzone();
+
+            // 显示重置成功消息
+            showMessage('URL已重置为默认值！');
+        }
+
+        // 显示消息函数
+    function showMessage(text) {
+        const notification = document.getElementById('messageDialog');
+        const messageElement = document.getElementById('dialogMessage');
         
+        // 设置消息文本
+        messageElement.textContent = text;
+        
+        // 显示notification
+        notification.classList.add('show');
+        
+        // 3秒后自动隐藏
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+        // 存储Dropzone实例的变量
+        let myDropzone;
+
+        // 初始化Dropzone
+        function initDropzone() {
+            // 获取当前输入的URL或使用默认URL
+            const uploadUrl = uploadUrlInput.value.trim() || defaultConfig.url;
+            // 确保有一个有效的URL
+            if (!uploadUrl) {
+                console.error('No URL provided for Dropzone');
+                return;
+            }
+
+            // 销毁现有的Dropzone实例（如果存在）
+            if (myDropzone) {
+                myDropzone.destroy();
+                myDropzone = null;  // 清除引用
+            }
+
+            // 使用配置初始化 Dropzone
+            myDropzone = new Dropzone("#myDropzone", {
+                url: uploadUrl,
+                init: function () {
+                    // 调用抽取的SVG设置函数
+                    setupSvgIcon(this);
+                    localStorage.setItem('dropzoneUploadUrl', uploadUrl);
+
+                    this.on('success', function (file, response) {
+                        console.log('上传成功', response);
+                    });
+                    this.on('error', function (file, errorMessage) {
+                        console.error('上传失败', errorMessage);
+                    });
+                }
+            });
+        }
+
         // 将SVG相关逻辑抽取到单独函数中
         function setupSvgIcon(dropzoneInstance) {
             // 获取SVG元素
@@ -59,7 +505,7 @@
 
             // 为SVG添加点击事件监听器
             if (svgIcon) {
-                svgIcon.addEventListener('click', function(e) {
+                svgIcon.addEventListener('click', function (e) {
                     // 触发dropzone区域的点击事件，打开文件选择对话框
                     dropzoneInstance.element.click();
                 });
@@ -79,6 +525,31 @@
                 }
             });
         }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            // 加载保存的URL
+            loadSavedUrl();
+
+            // 绑定保存按钮事件
+            saveUrlButton.addEventListener('click', saveUrl);
+
+            // 绑定重置按钮事件
+            resetUrlButton.addEventListener('click', resetUrl);
+
+            // 绑定回车键保存事件
+            uploadUrlInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    saveUrl();
+                }
+            });
+
+            // 延迟初始化Dropzone，确保DOM完全加载
+            setTimeout(function () {
+                initDropzone();
+            }, 100);
+        });
     </script>
 </body>
+
 </html>
