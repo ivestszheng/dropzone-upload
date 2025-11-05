@@ -244,6 +244,7 @@
             transform: translateX(100%);
             opacity: 0;
         }
+
         to {
             transform: translateX(0);
             opacity: 1;
@@ -381,7 +382,10 @@
                     <li>将文件拖放到上方区域进行上传</li>
                     <li>点击上传区域或SVG图标选择文件</li>
                     <li>支持多文件同时上传</li>
-                    <li>文件大小限制：无特殊限制</li>
+                    <li>文件大小无特殊限制</li>
+                    <li>可通过 URL 参数直接设置上传地址，
+                        使用示例：<p><code>https://ivestszheng.github.io/dropzone-upload?uploadUrl=https://your-server.com/upload</code></p>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -445,29 +449,41 @@
         }
 
         // 显示消息函数
-    function showMessage(text) {
-        const notification = document.getElementById('messageDialog');
-        const messageElement = document.getElementById('dialogMessage');
-        
-        // 设置消息文本
-        messageElement.textContent = text;
-        
-        // 显示notification
-        notification.classList.add('show');
-        
-        // 3秒后自动隐藏
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
-    }
+        function showMessage(text) {
+            const notification = document.getElementById('messageDialog');
+            const messageElement = document.getElementById('dialogMessage');
+
+            // 设置消息文本
+            messageElement.textContent = text;
+
+            // 显示notification
+            notification.classList.add('show');
+
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
 
         // 存储Dropzone实例的变量
         let myDropzone;
 
+
+        let firstInit = true;
         // 初始化Dropzone
         function initDropzone() {
             // 获取当前输入的URL或使用默认URL
-            const uploadUrl = uploadUrlInput.value.trim() || defaultConfig.url;
+            let uploadUrl;
+
+            if (firstInit) {
+                firstInit = false;
+                // 优先使用URL查询参数，如果没有则使用localStorage保存的值，最后使用默认值
+                uploadUrl = getQueryParam("uploadUrl") || localStorage.getItem('dropzoneUploadUrl') || defaultConfig.url;
+                uploadUrlInput.value = uploadUrl;
+            } else {
+                uploadUrl = uploadUrlInput.value.trim() || defaultConfig.url;
+            }
+
             // 确保有一个有效的URL
             if (!uploadUrl) {
                 console.error('No URL provided for Dropzone');
@@ -549,6 +565,9 @@
                 initDropzone();
             }, 100);
         });
+        function getQueryParam(name) {
+            return new URLSearchParams(window.location.search).get(name);
+        }
     </script>
 </body>
 
