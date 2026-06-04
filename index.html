@@ -115,6 +115,185 @@
         background-color: #f0f9ff;
     }
 
+    .headers-config {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .config-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .config-header:hover {
+        background-color: #f9fafb;
+    }
+
+    .config-header h2 {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .config-toggle {
+        font-size: 0.8rem;
+        color: #6b7280;
+        transition: transform 0.2s ease;
+    }
+
+    .config-toggle.expanded {
+        transform: rotate(180deg);
+    }
+
+    .config-content {
+        padding: 0 20px;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.3s ease, padding-top 0.3s ease, opacity 0.3s ease;
+        transform: translateY(-10px);
+    }
+
+    .config-content.expanded {
+        max-height: 1000px;
+        padding: 20px;
+        padding-top: 0;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .config-section {
+        margin-bottom: 20px;
+    }
+
+    .config-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .config-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .params-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .params-table th,
+    .params-table td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .params-table th {
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 0.9rem;
+        background-color: #f9fafb;
+    }
+
+    .param-key,
+    .param-value {
+        width: 40%;
+    }
+
+    .param-actions {
+        width: 20%;
+        text-align: center;
+    }
+
+    .param-input {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .param-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .param-input::placeholder {
+        color: #9ca3af;
+    }
+
+    .btn-action {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-add {
+        background-color: #ecfdf5;
+        color: #059669;
+    }
+
+    .btn-add:hover {
+        background-color: #d1fae5;
+    }
+
+    .btn-remove {
+        background-color: #fef2f2;
+        color: #dc2626;
+    }
+
+    .btn-remove:hover {
+        background-color: #fee2e2;
+    }
+
+    .btn-clear {
+        padding: 8px 16px;
+        background-color: #f59e0b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+
+    .btn-clear:hover {
+        background-color: #d97706;
+    }
+
+    .add-param-row {
+        color: #6b7280;
+        font-size: 0.9rem;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .add-param-row:hover {
+        color: #3b82f6;
+        background-color: #f3f4f6;
+    }
+
     .dropzone-container {
         background: white;
         border-radius: 12px;
@@ -366,6 +545,34 @@
             </div>
         </div>
 
+        <div class="headers-config">
+            <div class="config-header" id="configHeader">
+                <h2>请求配置</h2>
+                <span class="config-toggle" id="configToggle">▼</span>
+            </div>
+            <div class="config-content" id="configContent">
+                <div class="config-section">
+                    <div class="config-section-title">Headers</div>
+                    <table id="headersTable" class="params-table">
+                        <thead>
+                            <tr>
+                                <th class="param-key">参数名</th>
+                                <th class="param-value">参数值</th>
+                                <th class="param-actions">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="headersBody"></tbody>
+                        <tbody>
+                            <tr><td colspan="3" class="add-param-row" id="addHeaderRow">+ 添加 Header</td></tr>
+                        </tbody>
+                    </table>
+                    <button id="clearHeaders" class="btn-clear">清空 Headers</button>
+                </div>
+
+
+            </div>
+        </div>
+
         <div class="dropzone-container">
             <form id="myDropzone" class="dropzone">
                 <svg class="upload-icon" fill="currentcolor" t="1754740350687" class="icon" viewBox="0 0 1024 1024"
@@ -392,116 +599,248 @@
         </div>
 
         <footer>
-            <p>MIT Licensed | Copyright © 2021-present ivestszheng(无声2017)</p>
+            <p>MIT Licensed | Copyright © 2025-present ivestszheng(无声2017)</p>
         </footer>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/dropzone.min.js"></script>
     <script>
         Dropzone.autoDiscover = false;
-        // 默认配置
         const defaultConfig = {
             url: "https://httpbin.org/post",
         };
 
-        // 获取DOM元素
         const uploadUrlInput = document.getElementById('uploadUrl');
         const saveUrlButton = document.getElementById('saveUrl');
         const resetUrlButton = document.getElementById('resetUrl');
+        const headersBody = document.getElementById('headersBody');
+        const addHeaderRow = document.getElementById('addHeaderRow');
+        const clearHeadersButton = document.getElementById('clearHeaders');
 
-        // 从localStorage加载保存的URL
+
         function loadSavedUrl() {
-            // 设置placeholder为默认URL
             uploadUrlInput.placeholder = "请输入上传地址，例如：" + defaultConfig.url;
-
             const savedUrl = localStorage.getItem('dropzoneUploadUrl');
             if (savedUrl) {
                 uploadUrlInput.value = savedUrl;
             } else {
-                // 如果没有保存的URL，则使用默认URL
                 uploadUrlInput.value = defaultConfig.url;
             }
         }
 
-        // 保存URL到localStorage
+        function loadSavedHeaders() {
+            const savedHeaders = localStorage.getItem('dropzoneHeaders');
+            let headers = [];
+            
+            if (savedHeaders) {
+                try {
+                    headers = JSON.parse(savedHeaders);
+                } catch (e) {
+                    console.error('Failed to parse saved headers:', e);
+                }
+            }
+
+            const urlHeaders = parseParamsFromUrl('headers');
+            if (urlHeaders.length > 0) {
+                headers = urlHeaders;
+                saveParamsToStorage('dropzoneHeaders', headers);
+            }
+
+            while (headersBody.children.length > 0) {
+                headersBody.removeChild(headersBody.lastChild);
+            }
+
+            if (headers.length === 0) {
+                headersBody.appendChild(createParamRow('header', true));
+                return;
+            }
+
+            headers.forEach((header) => {
+                const row = createParamRow('header', true);
+                row.querySelector('.header-key').value = header.key;
+                row.querySelector('.header-value').value = header.value;
+                headersBody.appendChild(row);
+            });
+        }
+
+
+
+        function parseParamsFromUrl(paramName) {
+            const paramsParam = getQueryParam(paramName);
+            if (!paramsParam) return [];
+            
+            try {
+                const decoded = decodeURIComponent(paramsParam);
+                return JSON.parse(decoded);
+            } catch (e) {
+                console.error('Failed to parse ' + paramName + ' from URL:', e);
+                return [];
+            }
+        }
+
+        function createParamRow(type, showRemove) {
+            const row = document.createElement('tr');
+            row.className = 'param-row';
+            
+            const keyCell = document.createElement('td');
+            const keyInput = document.createElement('input');
+            keyInput.type = 'text';
+            keyInput.className = 'param-input ' + type + '-key';
+            keyInput.placeholder = 'Header Key';
+            keyCell.appendChild(keyInput);
+            
+            const valueCell = document.createElement('td');
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.className = 'param-input ' + type + '-value';
+            valueInput.placeholder = 'Header Value';
+            valueCell.appendChild(valueInput);
+            
+            const actionCell = document.createElement('td');
+            actionCell.className = 'param-actions';
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'btn-action btn-remove';
+            removeBtn.textContent = '删除';
+            removeBtn.style.display = showRemove ? 'block' : 'none';
+            removeBtn.addEventListener('click', () => removeParamRow(row, type));
+            actionCell.appendChild(removeBtn);
+            
+            row.appendChild(keyCell);
+            row.appendChild(valueCell);
+            row.appendChild(actionCell);
+            
+            return row;
+        }
+
+        function handleAddHeader() {
+            const newRow = createParamRow('header', true);
+            headersBody.appendChild(newRow);
+            saveParamsAndReinit();
+        }
+
+        function removeParamRow(row, type) {
+            row.remove();
+            
+            const remainingRows = headersBody.querySelectorAll('.param-row');
+            if (remainingRows.length === 0) {
+                const newRow = createParamRow('header', true);
+                headersBody.appendChild(newRow);
+            }
+            saveParamsAndReinit();
+        }
+
+        function clearAllHeaders() {
+            clearAllParams();
+            localStorage.removeItem('dropzoneHeaders');
+            initDropzone();
+            showMessage('Headers已清空！');
+        }
+
+        function clearAllParams() {
+            while (headersBody.children.length > 0) {
+                headersBody.removeChild(headersBody.lastChild);
+            }
+            headersBody.appendChild(createParamRow('header', true));
+        }
+
+        function getHeaders() {
+            const headers = {};
+            const rows = headersBody.querySelectorAll('.param-row');
+            
+            rows.forEach(row => {
+                const key = row.querySelector('.header-key').value.trim();
+                const value = row.querySelector('.header-value').value.trim();
+                if (key) {
+                    headers[key] = value;
+                }
+            });
+            
+            return headers;
+        }
+
+        function saveParamsToStorage(key, paramsArray) {
+            localStorage.setItem(key, JSON.stringify(paramsArray));
+        }
+
+        function saveParamsAndReinit() {
+            const headers = getHeaders();
+            const headersArray = Object.entries(headers).map(([key, value]) => ({ key, value }));
+            saveParamsToStorage('dropzoneHeaders', headersArray);
+            
+            initDropzone();
+        }
+
         function saveUrl() {
             const url = uploadUrlInput.value.trim();
             if (url) {
                 localStorage.setItem('dropzoneUploadUrl', url);
-                // 重新初始化Dropzone以使用新的URL
                 initDropzone();
-
-                // 显示成功消息
                 showMessage('URL保存成功！');
             } else {
                 showMessage('请输入有效的URL');
             }
         }
 
-        // 重置URL到默认值
         function resetUrl() {
             uploadUrlInput.value = defaultConfig.url;
             localStorage.removeItem('dropzoneUploadUrl');
-            // 重新初始化Dropzone以使用默认URL
             initDropzone();
-
-            // 显示重置成功消息
             showMessage('URL已重置为默认值！');
         }
 
-        // 显示消息函数
         function showMessage(text) {
             const notification = document.getElementById('messageDialog');
             const messageElement = document.getElementById('dialogMessage');
-
-            // 设置消息文本
             messageElement.textContent = text;
-
-            // 显示notification
             notification.classList.add('show');
-
-            // 3秒后自动隐藏
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
         }
 
-        // 存储Dropzone实例的变量
         let myDropzone;
-
-
         let firstInit = true;
-        // 初始化Dropzone
+
         function initDropzone() {
-            // 获取当前输入的URL或使用默认URL
             let uploadUrl;
 
             if (firstInit) {
                 firstInit = false;
-                // 优先使用URL查询参数，如果没有则使用localStorage保存的值，最后使用默认值
                 uploadUrl = getQueryParam("uploadUrl") || localStorage.getItem('dropzoneUploadUrl') || defaultConfig.url;
                 uploadUrlInput.value = uploadUrl;
             } else {
                 uploadUrl = uploadUrlInput.value.trim() || defaultConfig.url;
             }
 
-            // 确保有一个有效的URL
             if (!uploadUrl) {
                 console.error('No URL provided for Dropzone');
                 return;
             }
 
-            // 销毁现有的Dropzone实例（如果存在）
             if (myDropzone) {
-                myDropzone.destroy();
-                myDropzone = null;  // 清除引用
+                try {
+                    myDropzone.destroy();
+                } catch (e) {
+                    console.warn('Error destroying dropzone:', e);
+                }
+                myDropzone = null;
             }
 
-            // 使用配置初始化 Dropzone
-            myDropzone = new Dropzone("#myDropzone", {
+            const headers = getHeaders();
+
+            const formElement = document.getElementById('myDropzone');
+            if (formElement && formElement.dropzone) {
+                try {
+                    formElement.dropzone.destroy();
+                } catch (e) {
+                    console.warn('Error destroying existing dropzone instance:', e);
+                }
+            }
+
+            myDropzone = new Dropzone(formElement, {
                 url: uploadUrl,
+                headers: headers,
                 init: function () {
-                    // 调用抽取的SVG设置函数
                     setupSvgIcon(this);
                     localStorage.setItem('dropzoneUploadUrl', uploadUrl);
 
@@ -515,27 +854,21 @@
             });
         }
 
-        // 将SVG相关逻辑抽取到单独函数中
         function setupSvgIcon(dropzoneInstance) {
-            // 获取SVG元素
             const svgIcon = document.querySelector('.upload-icon');
 
-            // 为SVG添加点击事件监听器
             if (svgIcon) {
                 svgIcon.addEventListener('click', function (e) {
-                    // 触发dropzone区域的点击事件，打开文件选择对话框
                     dropzoneInstance.element.click();
                 });
             }
 
-            // 文件添加事件 - 隐藏SVG图标
             dropzoneInstance.on('addedfile', function () {
                 if (svgIcon) {
                     svgIcon.style.display = 'none';
                 }
             });
 
-            // 文件移除事件 - 如果没有文件了，显示SVG图标
             dropzoneInstance.on('removedfile', function () {
                 if (svgIcon && this.files.length === 0) {
                     svgIcon.style.display = 'block';
@@ -543,31 +876,55 @@
             });
         }
 
-        // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function () {
-            // 加载保存的URL
             loadSavedUrl();
+            loadSavedHeaders();
 
-            // 绑定保存按钮事件
             saveUrlButton.addEventListener('click', saveUrl);
-
-            // 绑定重置按钮事件
             resetUrlButton.addEventListener('click', resetUrl);
+            addHeaderRow.addEventListener('click', handleAddHeader);
+            clearHeadersButton.addEventListener('click', clearAllHeaders);
 
-            // 绑定回车键保存事件
             uploadUrlInput.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     saveUrl();
                 }
             });
 
-            // 延迟初始化Dropzone，确保DOM完全加载
+            headersBody.addEventListener('input', debounce(() => {
+                saveParamsAndReinit();
+            }, 500));
+
+            const configHeader = document.getElementById('configHeader');
+            const configContent = document.getElementById('configContent');
+            const configToggle = document.getElementById('configToggle');
+
+            configHeader.addEventListener('click', function () {
+                configContent.classList.toggle('expanded');
+                configToggle.classList.toggle('expanded');
+            });
+
+
+
             setTimeout(function () {
                 initDropzone();
             }, 100);
         });
+
         function getQueryParam(name) {
             return new URLSearchParams(window.location.search).get(name);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
     </script>
 </body>
